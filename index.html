@@ -504,8 +504,8 @@
                 layoutState.nameEllipseHeight = nameRect.height / 2;
                 layoutState.nameRadius = Math.min(layoutState.nameEllipseWidth, layoutState.nameEllipseHeight);
                 const shortestSide = Math.min(containerRect.width, containerRect.height);
-                layoutState.baseRadius = shortestSide * 0.36;
-                layoutState.maxRadius = shortestSide * 0.48;
+                layoutState.baseRadius = shortestSide * 0.44;
+                layoutState.maxRadius = shortestSide * 0.6;
                 layoutState.ready = true;
 
                 bubbleConfigs.forEach(config => {
@@ -522,7 +522,7 @@
                     cos,
                     sin
                 );
-                const clearance = ellipseRadiusAlongDirection + bubbleRadius + 32;
+                const clearance = ellipseRadiusAlongDirection + bubbleRadius + 48;
                     let radius = layoutState.baseRadius + config.radiusOffset;
                     radius = Math.max(radius, clearance);
                     radius = Math.min(
