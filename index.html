@@ -91,18 +91,31 @@
             width: clamp(320px, 34vw, 460px);
             height: clamp(220px, 26vw, 320px);
             padding: 1.25rem 2.5rem;
+            z-index: 15;
+        }
+
+        .name-center::before {
+            content: '';
+            position: absolute;
+            inset: -4%;
+            border-radius: 52% / 60%;
+            background: radial-gradient(ellipse at 50% 50%, rgba(8, 12, 20, 0.92), rgba(8, 12, 20, 0.05));
+            opacity: 0.85;
+            filter: blur(2px);
+            z-index: 0;
+            pointer-events: none;
         }
 
         .name-center .name-orb {
             position: absolute;
             inset: 0;
             border-radius: 50% / 58%;
-            background: radial-gradient(ellipse at 52% 38%, rgba(126, 176, 255, 0.16), rgba(12, 20, 36, 0.08));
+            background: radial-gradient(ellipse at 52% 50%, rgba(20, 26, 40, 0.92) 0%, rgba(32, 52, 92, 0.75) 55%, rgba(14, 22, 36, 0.58) 78%, rgba(8, 12, 20, 0.15) 100%);
             border: 1px solid rgba(126, 176, 255, 0.18);
-            box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
+            box-shadow: 0 16px 34px rgba(70, 120, 200, 0.26), 0 0 120px rgba(120, 180, 255, 0.32);
             filter: drop-shadow(0 0 32px rgba(110, 140, 220, 0.32));
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
             transform-origin: center;
             animation: orbPulse 12s ease-in-out infinite;
         }
@@ -118,7 +131,7 @@
             text-shadow: 0 0 14px rgba(95, 160, 255, 0.36);
             line-height: 1.05;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         .hero-description {
@@ -127,7 +140,7 @@
             color: rgba(220, 228, 244, 0.72);
             line-height: 1.4;
             position: relative;
-            z-index: 1;
+            z-index: 3;
         }
 
         /* Bubbles positioned around the name */
@@ -364,7 +377,7 @@
             <div class="bubble-content">
                 <div class="bubble-title">Science Olympiad</div>
                 <div class="bubble-role">M.S Supervisor</div>
-                <div class="bubble-detail">STEM Education Initiative</div>
+                <div class="bubble-detail">STEM Education Intiative</div>
             </div>
         </div>
 
@@ -462,7 +475,9 @@
                 centerY: 0,
                 nameRadius: 0,
                 baseRadius: 0,
-                maxRadius: 0
+                maxRadius: 0,
+                nameEllipseWidth: 0,
+                nameEllipseHeight: 0
             };
 
             let layoutDirty = true;
@@ -485,7 +500,9 @@
                 layoutState.nameRect = nameRect;
                 layoutState.centerX = nameRect.left + nameRect.width / 2 - containerRect.left;
                 layoutState.centerY = nameRect.top + nameRect.height / 2 - containerRect.top;
-                layoutState.nameRadius = Math.min(nameRect.width, nameRect.height) / 2;
+                layoutState.nameEllipseWidth = nameRect.width / 2;
+                layoutState.nameEllipseHeight = nameRect.height / 2;
+                layoutState.nameRadius = Math.min(layoutState.nameEllipseWidth, layoutState.nameEllipseHeight);
                 const shortestSide = Math.min(containerRect.width, containerRect.height);
                 layoutState.baseRadius = shortestSide * 0.36;
                 layoutState.maxRadius = shortestSide * 0.48;
@@ -499,7 +516,13 @@
                     const limitX = containerRect.width / 2 - bubbleRadius - 16;
                     const limitY = containerRect.height / 2 - bubbleRadius - 16;
 
-                    const clearance = layoutState.nameRadius + bubbleRadius + 38;
+                const ellipseRadiusAlongDirection = ellipseRadiusAt(
+                    layoutState.nameEllipseWidth,
+                    layoutState.nameEllipseHeight,
+                    cos,
+                    sin
+                );
+                const clearance = ellipseRadiusAlongDirection + bubbleRadius + 32;
                     let radius = layoutState.baseRadius + config.radiusOffset;
                     radius = Math.max(radius, clearance);
                     radius = Math.min(
@@ -544,7 +567,7 @@
                     return;
                 }
 
-                const { containerRect, centerX, centerY, nameRadius } = layoutState;
+                const { containerRect, centerX, centerY, nameEllipseWidth, nameEllipseHeight } = layoutState;
                 svg.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
 
                 arrowTargets.forEach(({ line, config }) => {
@@ -556,9 +579,14 @@
                     const normX = dx / distance;
                     const normY = dy / distance;
 
-                    const originOffset = Math.max(nameRadius - 4, 0);
-                    const originX = centerX + normX * originOffset;
-                    const originY = centerY + normY * originOffset;
+                    const { x: originX, y: originY } = ellipseEdgePoint(
+                        centerX,
+                        centerY,
+                        nameEllipseWidth,
+                        nameEllipseHeight,
+                        normX,
+                        normY
+                    );
 
                     const targetOffset = Math.max(bubbleRadius - 6, 0);
                     const targetX = config.currentX - normX * targetOffset;
@@ -570,6 +598,22 @@
                     line.setAttribute('y2', targetY.toFixed(2));
                 });
             };
+
+            function ellipseRadiusAt(radiusX, radiusY, cos, sin) {
+                return 1 / Math.sqrt(
+                    Math.pow(cos / radiusX, 2) + Math.pow(sin / radiusY, 2)
+                );
+            }
+
+            function ellipseEdgePoint(cx, cy, radiusX, radiusY, dirX, dirY) {
+                const scale = 1 / Math.sqrt(
+                    Math.pow(dirX / radiusX, 2) + Math.pow(dirY / radiusY, 2)
+                );
+                return {
+                    x: cx + dirX * scale,
+                    y: cy + dirY * scale
+                };
+            }
 
             const markLayoutDirty = () => {
                 layoutDirty = true;
