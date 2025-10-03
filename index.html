@@ -110,25 +110,33 @@
             position: absolute;
             inset: 0;
             border-radius: 50% / 58%;
-            background: radial-gradient(ellipse at 52% 50%, rgba(20, 26, 40, 0.92) 0%, rgba(32, 52, 92, 0.75) 55%, rgba(14, 22, 36, 0.58) 78%, rgba(8, 12, 20, 0.15) 100%);
+            background: #1a2236; /* Solid color, no gradient */
             border: 1px solid rgba(126, 176, 255, 0.18);
-            box-shadow: 0 16px 34px rgba(70, 120, 200, 0.26), 0 0 120px rgba(120, 180, 255, 0.32);
-            filter: drop-shadow(0 0 32px rgba(110, 140, 220, 0.32));
             pointer-events: none;
             z-index: 1;
             transform-origin: center;
             animation: orbPulse 12s ease-in-out infinite;
         }
 
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scaleX(1) scaleY(1);
+            }
+            50% {
+                transform: scaleX(1.04) scaleY(1.02);
+            }
+        }
+
         .hero-name {
             font-size: clamp(1.9rem, 4.8vw, 3.6rem);
             font-weight: 700;
             margin-bottom: 0.12rem;
-            background: linear-gradient(45deg, #e9f0ff, #7fb0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 14px rgba(95, 160, 255, 0.36);
+            color: #bcd3f6; /* Match ASM bubble color */
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+            background-clip: unset;
+            text-shadow: none;
             line-height: 1.05;
             position: relative;
             z-index: 3;
@@ -164,9 +172,8 @@
             transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                         background 0.35s ease,
                         border-color 0.35s ease,
-                        box-shadow 0.35s ease,
+                        /* Removed box-shadow for no glow */
                         opacity 0.35s ease;
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38), 0 0 36px rgba(90, 130, 220, 0.18);
             z-index: 15;
             transform: translate(-50%, -50%);
             overflow: hidden;
@@ -273,17 +280,6 @@
         .contact-footer a:hover {
             color: #4A90E2;
             transform: translateY(-2px);
-        }
-
-        @keyframes orbPulse {
-            0%, 100% {
-                transform: scaleX(1) scaleY(1);
-                box-shadow: 0 16px 32px rgba(80, 130, 210, 0.16), 0 0 120px rgba(120, 180, 255, 0.28);
-            }
-            50% {
-                transform: scaleX(1.04) scaleY(1.02);
-                box-shadow: 0 22px 48px rgba(90, 150, 230, 0.22), 0 0 160px rgba(155, 200, 255, 0.42);
-            }
         }
 
         /* Responsive */
@@ -409,9 +405,8 @@
     <!-- Contact footer -->
     <footer class="contact-footer">
         <a href="mailto:ebober@seas.upenn.edu" title="Email">Email</a>
-        <a href="https://linkedin.com/in/ethan-bober" target="_blank" title="LinkedIn">LinkedIn</a>
-        <a href="https://github.com/ethan-bober" target="_blank" title="GitHub">GitHub</a>
-        <a href="tel:954-982-1449" title="Phone">Phone</a>
+        <a href="https://www.linkedin.com/in/ethanbober/" target="_blank" title="LinkedIn">LinkedIn</a>
+        <a href="https://github.com/EthanBober" target="_blank" title="GitHub">GitHub</a>
     </footer>
 
     <script src="main.js"></script>
