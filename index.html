@@ -23,6 +23,32 @@
             height: 100vh;
             width: 100vw;
         }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.32;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,0,0,0.45) 24px, transparent 25px),
+                repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(0,80,255,0.45) 24px, transparent 25px),
+                radial-gradient(circle, rgba(255,0,0,0.45) 1.5px, transparent 2.5px),
+                radial-gradient(circle, rgba(0,80,255,0.45) 1.5px, transparent 2.5px);
+            background-size:
+                25px 25px,
+                25px 25px,
+                25px 25px,
+                25px 25px;
+            background-position:
+                0 0,
+                0 0,
+                0 0,
+                12.5px 12.5px;
+        }
 
         /* Canvas for interactive grid background */
         #gridCanvas {
